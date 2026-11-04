@@ -17,10 +17,10 @@
 .asciisoft-mention li.active, .asciisoft-mention li:hover { background: #e8eef8; }
 
 /* 툴바: 32x32 버튼, 선 아이콘, 툴바 색과 같은 배경 */
-.asciisoft-editor .toastui-editor-defaultUI-toolbar { block-size: auto; min-block-size: 40px; padding: 4px; align-items: center; flex-wrap: wrap; row-gap: 2px;
+.asciisoft-editor .toastui-editor-defaultUI-toolbar { block-size: auto; min-block-size: 40px; padding: 4px; align-items: center;
   background: #f7f8fa; border-block-end: 1px solid #e3e6ec; }
 .asciisoft-editor .toastui-editor-toolbar-group { display: flex; align-items: center; }
-.asciisoft-editor .toastui-editor-toolbar-divider { block-size: 18px; margin: 0 6px; background: #dfe3ea; }
+.asciisoft-editor .toastui-editor-toolbar-divider { block-size: 18px; margin: 0 6px; background: #d2d7e0; }
 .asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons {
   inline-size: 32px; block-size: 32px; margin: 0 1px; padding: 0; border: 1px solid transparent; border-radius: 4px;
   background-color: transparent; background-repeat: no-repeat; vertical-align: middle;
@@ -49,19 +49,10 @@
 .asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.asciisoft-ic-wiki { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7.5 5H5v14h2.5M10.5 5H8.5v14h2M16.5 5H19v14h-2.5M13.5 5h2v14h-2'/%3E%3C/svg%3E"); }
 .asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.asciisoft-ic-lineheight { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h12M6 20h12M12 7.5v9M9.5 10 12 7.5 14.5 10M9.5 14l2.5 2.5 2.5-2.5'/%3E%3C/svg%3E"); }
 .asciisoft-combo { display: inline-flex; align-items: center; block-size: 32px; margin: 0 2px; border-radius: 4px; }
-.asciisoft-editor .toastui-editor-toolbar-group:first-child .asciisoft-combo:first-child { margin-inline-start: 0; }
 .asciisoft-combo:hover { background: #e7eaf0; }
 .asciisoft-tb-select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; block-size: 32px;
   padding: 0 2px 0 4px; font-size: 12px; color: #333; cursor: pointer; outline: none; }
 .asciisoft-tb-select:focus-visible { box-shadow: inset 0 0 0 1px #4f7cc8; border-radius: 4px; }
-.asciisoft-combo-font .asciisoft-tb-select { inline-size: 88px; }
-.asciisoft-combo-size .asciisoft-tb-select { inline-size: 34px; }
-.asciisoft-stepper { display: inline-flex; flex-direction: column; justify-content: center; block-size: 32px; margin-inline-end: 2px; }
-.asciisoft-step { inline-size: 14px; block-size: 12px; padding: 0; border: 0; border-radius: 2px; cursor: pointer;
-  background: transparent center / 9px 9px no-repeat; }
-.asciisoft-step:hover { background-color: #d9dee8; }
-.asciisoft-step-up { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 14l5-5 5 5'/%3E%3C/svg%3E"); }
-.asciisoft-step-down { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E"); }
 .asciisoft-menu { position: absolute; z-index: 1000; margin: 0; padding: 4px 0; list-style: none; min-inline-size: 96px;
   background: #fff; border: 1px solid #c5ccd8; box-shadow: 0 4px 12px rgba(23,41,72,.15); }
 .asciisoft-menu li { position: relative; padding: 5px 12px 5px 26px; font-size: 13px; cursor: pointer; }
@@ -71,7 +62,58 @@
 .asciisoft-editor .toastui-editor-toolbar-item-wrapper { display: inline-flex; align-items: center; block-size: 32px; margin: 0 1px; }
 .asciisoft-editor .toastui-editor-dropdown-toolbar { display: flex; align-items: center; padding: 4px; block-size: auto; }
 .asciisoft-editor .toastui-editor-toolbar-item-wrapper > button.toastui-editor-toolbar-icons { margin: 0 !important; }
-/* 툴바가 줄바꿈되므로 '더보기' 버튼은 쓰지 않는다 */
-.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.more { display: none !important; }
 .asciisoft-editor .toastui-editor-defaultUI-toolbar .toastui-editor-toolbar-item-wrapper { display: inline-flex !important; align-items: center; block-size: 32px; }
 .asciisoft-editor .toastui-editor-defaultUI-toolbar .toastui-editor-toolbar-item-wrapper > button { display: block; }
+
+/* 툴바 높이: 버튼 32px + 위아래 3px (기본 46px 고정 높이 해제) */
+.asciisoft-editor .toastui-editor-toolbar { height: auto !important; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar { height: auto !important; min-height: 0 !important; padding: 3px 4px !important; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons {
+  inline-size: 32px !important; block-size: 32px !important; min-inline-size: 32px !important; min-block-size: 32px !important;
+  max-inline-size: 32px !important; max-block-size: 32px !important; padding: 0 !important; box-sizing: border-box !important; }
+.asciisoft-editor .toastui-editor-toolbar-divider { inline-size: 1px; background: #d2d7e0 !important; }
+
+/* 글꼴, 크기 선택 상자 */
+.asciisoft-combo-font .asciisoft-tb-select { inline-size: 100px; margin-left: 5px; }
+.asciisoft-combo-size .asciisoft-tb-select { inline-size: 52px; margin-left: 2px; }
+/* 위/아래 버튼: 가로 32px, 세로는 툴바 버튼 높이(32px)를 반으로 나눈 16px */
+.asciisoft-stepper { display: inline-flex !important; flex-direction: column; inline-size: 32px !important; block-size: 32px !important; margin: 0 !important; padding: 0; }
+.asciisoft-step { display: block !important; inline-size: 32px !important; block-size: 16px !important;
+  min-inline-size: 0 !important; min-block-size: 0 !important; margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0;
+  background-color: transparent !important; background-repeat: no-repeat !important; background-size: 7px 4px !important;
+  font-size: 0; line-height: 0; color: transparent; cursor: pointer; box-sizing: border-box; }
+.asciisoft-step:hover { background-color: #e7eaf0 !important; }
+/* 얇은 선 모양(^ v) 화살표: 위 화살표는 위쪽 칸 아래쪽에, 아래 화살표는 아래쪽 칸 위쪽에 붙여 두 화살표 중심 간격을 11px로 맞춤 */
+.asciisoft-step-up { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4' viewBox='0 0 7 4'%3E%3Cpath d='M0.5 3.5 L3.5 0.5 L6.5 3.5' fill='none' stroke='%23909096' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important; background-position: center 8.5px !important; }
+.asciisoft-step-down { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4' viewBox='0 0 7 4'%3E%3Cpath d='M0.5 0.5 L3.5 3.5 L6.5 0.5' fill='none' stroke='%23909096' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important; background-position: center 3.5px !important; }
+
+/* 레이어 팝업 (320 x 200) */
+.asciisoft-dialog-overlay { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;
+  background: rgba(23, 41, 72, .25); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.asciisoft-dialog { inline-size: 320px; block-size: 200px; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; gap: 8px;
+  background: #fff; border: 1px solid #c5ccd8; border-radius: 4px; box-shadow: 0 8px 28px rgba(23, 41, 72, .28); }
+.asciisoft-dialog h3 { margin: 0; font-size: 16px; line-height: 22px; color: #172948; }
+.asciisoft-dialog label { font-size: 13px; color: #4a5875; }
+.asciisoft-dialog input[type=text] { inline-size: 100%; box-sizing: border-box; block-size: 32px; padding: 0 8px; font-size: 14px; border: 1px solid #b9c4db; border-radius: 4px; }
+.asciisoft-dialog input[type=text]:focus { outline: 0; border-color: #2e5392; box-shadow: 0 0 0 1px #2e5392; }
+.asciisoft-dialog-error { margin: 0; font-size: 12px; color: #b3261e; }
+.asciisoft-dialog-error[hidden] { display: none; }
+.asciisoft-dialog-buttons { margin-top: auto; display: flex; justify-content: flex-end; gap: 8px; }
+.asciisoft-dialog-buttons button { block-size: 32px; padding: 0 16px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+.asciisoft-dialog-ok { background: #2e5392; color: #fff; border: 1px solid #2e5392; }
+.asciisoft-dialog-ok:hover { background: #172948; }
+.asciisoft-dialog-cancel { background: #fff; color: #333; border: 1px solid #c5ccd8; }
+.asciisoft-dialog-cancel:hover { background: #f1f3f7; }
+
+/* 댓글에 에디터를 쓰지 않을 때: Redmine 툴바와 탭 숨김 */
+.asciisoft-plain .jstTabs, .asciisoft-plain .jstElements { display: none !important; }
+
+/* Redmine 입력 양식(.tabular)의 문단·라벨·입력칸 규칙이 편집기 안으로 새어 들어오지 않게 되돌린다
+   (문단 왼쪽 180px 들여쓰기, 라벨 왼쪽 떠 있기 등) */
+.asciisoft-editor p,
+.asciisoft-editor .toastui-editor-contents p,
+.asciisoft-editor .ProseMirror p { padding: 0 !important; min-block-size: 0 !important; clear: none !important; overflow: visible !important; }
+.asciisoft-editor label { float: none !important; margin: 0 !important; inline-size: auto !important; text-align: start !important; font-weight: normal; line-height: normal; }
+.asciisoft-editor input, .asciisoft-editor select, .asciisoft-editor textarea { max-inline-size: none; }
+.tabular .asciisoft-editor { max-inline-size: 95%; }
+.asciisoft-editor .toastui-editor-contents th { text-align: start; }

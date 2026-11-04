@@ -1,4 +1,5 @@
-<% fonts = AsciisoftRedmineEditor::FONT_NAMES %>
+<% ko = current_language.to_s.start_with?('ko') %>
+<% fonts = AsciisoftRedmineEditor::FONT_BASE + (ko ? AsciisoftRedmineEditor::FONT_KO : []) %>
 <% sizes = AsciisoftRedmineEditor::FONT_SIZES.map { |n| ["#{n}px", n.to_s] } %>
 <p>
   <label for="settings_enabled"><%= l(:asciisoft_editor_setting_enabled) %></label>
@@ -15,11 +16,6 @@
   <%= select_tag 'settings[default_font_size]', options_for_select(sizes, (@settings['default_font_size'].presence || '14').to_s), id: 'settings_default_font_size' %>
 </p>
 <p>
-  <label for="settings_editor_height"><%= l(:asciisoft_editor_setting_height) %></label>
-  <%= number_field_tag 'settings[editor_height]', @settings['editor_height'], min: 120, max: 2000, step: 10, id: 'settings_editor_height', size: 6 %> px
-  <em class="info"><%= l(:asciisoft_editor_setting_height_info) %></em>
-</p>
-<p>
   <label for="settings_show_wysiwyg"><%= l(:asciisoft_editor_setting_show_wysiwyg) %></label>
   <%= hidden_field_tag 'settings[show_wysiwyg]', '0', id: nil %>
   <%= check_box_tag 'settings[show_wysiwyg]', '1', @settings.fetch('show_wysiwyg', '1').to_s == '1', id: 'settings_show_wysiwyg' %>
@@ -30,3 +26,37 @@
   <%= check_box_tag 'settings[show_markdown]', '1', @settings.fetch('show_markdown', '1').to_s == '1', id: 'settings_show_markdown' %>
   <em class="info"><%= l(:asciisoft_editor_setting_tabs_info) %></em>
 </p>
+<p>
+  <label for="settings_comment_editor"><%= l(:asciisoft_editor_setting_comment_editor) %></label>
+  <%= hidden_field_tag 'settings[comment_editor]', '0', id: nil %>
+  <%= check_box_tag 'settings[comment_editor]', '1', @settings.fetch('comment_editor', '1').to_s == '1', id: 'settings_comment_editor' %>
+  <em class="info"><%= l(:asciisoft_editor_setting_comment_editor_info) %></em>
+</p>
+
+<h3><%= l(:asciisoft_editor_setting_heights) %></h3>
+<p><em class="info"><%= l(:asciisoft_editor_setting_height_info) %></em></p>
+<table class="list">
+  <thead><tr><th><%= l(:asciisoft_editor_setting_height_target) %></th><th><%= l(:asciisoft_editor_setting_height_custom) %></th><th><%= l(:asciisoft_editor_setting_height_px) %></th></tr></thead>
+  <tbody>
+    <% AsciisoftRedmineEditor::MODULE_KEYS.each do |k| %>
+      <% on = @settings["height_#{k}_on"].to_s == '1' %>
+      <tr>
+        <td><%= l("asciisoft_editor_module_#{k}") %></td>
+        <td style="text-align:center">
+          <%= hidden_field_tag "settings[height_#{k}_on]", '0', id: nil %>
+          <%= check_box_tag "settings[height_#{k}_on]", '1', on, id: "settings_height_#{k}_on", class: 'asciisoft-height-toggle', data: { target: "settings_height_#{k}" } %>
+        </td>
+        <td style="text-align:center">
+          <%= number_field_tag "settings[height_#{k}]", (@settings["height_#{k}"].presence || '300'), min: 120, max: 2000, step: 10,
+                id: "settings_height_#{k}", size: 6, readonly: !on %> px
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= javascript_tag do %>
+  document.querySelectorAll('.asciisoft-height-toggle').forEach(function (cb) {
+    function sync() { var t = document.getElementById(cb.dataset.target); if (t) { t.readOnly = !cb.checked; t.style.opacity = cb.checked ? '' : '.55'; } }
+    cb.addEventListener('change', sync); sync();
+  });
+<% end %>

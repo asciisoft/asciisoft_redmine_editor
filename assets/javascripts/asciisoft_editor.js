@@ -15,6 +15,7 @@
     noAttach: '이 화면에서는 이미지를 첨부할 수 없습니다. 일감 편집 화면에서 붙여넣어 주세요.',
     tooMany: '첨부할 수 있는 파일 수를 넘었습니다.',
     fontFamily: '글꼴', fontSize: '크기', lineHeight: '줄간격', defaultValue: '기본', imageLabel: '이미지',
+    ok: '확인', cancel: '취소', dialogInvalid: '올바른 값을 입력하세요.',
     prevItem: '이전 글꼴', nextItem: '다음 글꼴', sizeUp: '크게', sizeDown: '작게', editorTab: '에디터',
     mdNoticeNoSwitch: '이 내용에는 에디터 모드에서 달라질 수 있는 문법이 있어 Markdown 모드로 열었습니다.',
     mdNotice: '이 내용에는 WYSIWYG로 바꾸면 달라질 수 있는 문법이 있어 Markdown 모드로 열었습니다. 아래쪽 탭에서 WYSIWYG로 전환할 수 있습니다.'
@@ -43,14 +44,17 @@
   }
 
   /* ---------- 글꼴, 크기, 줄간격 ---------- */
-  var FONT_FAMILIES = [
+  var BASE_FONTS = [
     ['Consolas', 'Consolas, monospace'], ['Tahoma', 'Tahoma, sans-serif'], ['Arial', 'Arial, sans-serif'],
     ['Impact', 'Impact, sans-serif'], ['Segoe UI', "'Segoe UI', sans-serif"], ['Courier New', "'Courier New', monospace"],
-    ['Verdana', 'Verdana, sans-serif'], ['Sans-serif', 'sans-serif'], ['Times New Roman', "'Times New Roman', serif"],
+    ['Verdana', 'Verdana, sans-serif'], ['Sans-serif', 'sans-serif'], ['Times New Roman', "'Times New Roman', serif"]
+  ];
+  var KO_FONTS = [
     ['맑은 고딕', "'Malgun Gothic', sans-serif"], ['굴림', 'Gulim, sans-serif'], ['돋움', 'Dotum, sans-serif'],
     ['바탕', 'Batang, serif'], ['궁서', 'Gungsuh, serif']
   ];
-  var FONT_SIZES = [7, 8, 9, 10, 11, 12, 14, 15, 18, 20, 24, 28, 32, 38, 45, 48];
+  var FONT_FAMILIES = BASE_FONTS.concat(CFG.koFonts ? KO_FONTS : []);
+  var FONT_SIZES = [7, 8, 9, 10, 11, 12, 14, 15, 18, 20, 24, 28, 32, 38, 45, 48, 72, 99];
   var LINE_HEIGHTS = ['1', '1.15', '1.5', '1.8', '2', '2.5', '3'];
   var STYLE_ORDER = ['font-family', 'font-size', 'line-height'];
   var FAMILY_VALUES = FONT_FAMILIES.map(function (f) { return f[1]; });
@@ -60,7 +64,7 @@
     var v = String(value || '').trim().replace(/\s+/g, ' ');
     if (tag === 'SPAN') {
       if (prop === 'font-family') return /^[A-Za-z0-9 ,'\-\uAC00-\uD7A3]{1,80}$/.test(v) ? v : null;
-      if (prop === 'font-size') { var m = v.match(/^(\d{1,2}(?:\.\d)?)px$/); return m && +m[1] >= 6 && +m[1] <= 72 ? v : null; }
+      if (prop === 'font-size') { var m = v.match(/^(\d{1,2}(?:\.\d)?)px$/); return m && +m[1] >= 6 && +m[1] <= 99 ? v : null; }
       if (prop === 'line-height') return /^\d(?:\.\d{1,2})?$/.test(v) && +v >= 0.8 && +v <= 4 ? v : null;
     }
     if ((tag === 'TD' || tag === 'TH') && prop === 'text-align') return /^(left|center|right)$/.test(v) ? v : null;
@@ -307,6 +311,79 @@
     return { el: btn, setCurrent: function (v) { current = v || ''; } };
   }
 
+  /* ---------- 레이어 팝업 (320x200, 배경 블러, 배경 클릭 시 취소) ---------- */
+  function askDialog(o) {
+    var overlay = document.createElement('div');
+    overlay.className = 'asciisoft-dialog-overlay';
+    var box = document.createElement('div');
+    box.className = 'asciisoft-dialog';
+    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    var title = document.createElement('h3'); title.textContent = o.title;
+    var label = document.createElement('label'); label.textContent = o.label;
+    var input = document.createElement('input'); input.type = 'text'; input.maxLength = 100; input.autocomplete = 'off';
+    if (o.placeholder) input.placeholder = o.placeholder;
+    var id = 'asciisoft-dlg-' + Math.random().toString(36).slice(2, 8);
+    input.id = id; label.setAttribute('for', id);
+    var err = document.createElement('p'); err.className = 'asciisoft-dialog-error'; err.textContent = o.invalid || ''; err.hidden = true;
+    var row = document.createElement('div'); row.className = 'asciisoft-dialog-buttons';
+    var cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'asciisoft-dialog-cancel'; cancel.textContent = o.cancel;
+    var ok = document.createElement('button'); ok.type = 'button'; ok.className = 'asciisoft-dialog-ok'; ok.textContent = o.ok;
+    row.appendChild(cancel); row.appendChild(ok);
+    [title, label, input, err, row].forEach(function (n) { box.appendChild(n); });
+    overlay.appendChild(box); document.body.appendChild(overlay);
+    function close() {
+      document.removeEventListener('keydown', onKey, true);
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      if (o.onClose) o.onClose();
+    }
+    function submit() {
+      var v = o.normalize(input.value);
+      if (v === null) { err.hidden = false; input.focus(); return; }
+      close(); o.onOk(v);
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); }
+      else if (e.key === 'Enter' && e.target === input) { e.preventDefault(); e.stopPropagation(); submit(); }
+    }
+    overlay.addEventListener('mousedown', function (e) { if (e.target === overlay) close(); });
+    ok.addEventListener('click', submit);
+    cancel.addEventListener('click', close);
+    document.addEventListener('keydown', onKey, true);
+    input.focus();
+  }
+
+  /* ---------- 입력칸이 어느 화면(모듈)의 것인지 판별 ---------- */
+  var COMMENT_KEYS = { issue_notes: 1, news_comment: 1 };
+  function moduleKey(ta) {
+    var id = ta.id || '';
+    if (id === 'issue_description') return 'issue_description';
+    if (id === 'issue_notes' || id === 'notes' || /^journal_\d+_notes$/.test(id)) return 'issue_notes';
+    if (id === 'news_description') return 'news_description';
+    if (id === 'comment_comments') return 'news_comment';
+    if (id === 'message_content') return 'message';
+    if (id === 'content_text') return 'wiki';
+    if (id === 'document_description') return 'document';
+    if (id === 'project_description') return 'project';
+    return null;
+  }
+  function moduleHeight(key) {
+    var h = CFG.heights && key ? parseInt(CFG.heights[key], 10) : NaN;
+    return h >= 120 && h <= 2000 ? h : NaN;
+  }
+  function isPlain(ta) {
+    var k = moduleKey(ta);
+    return !!(k && COMMENT_KEYS[k] && CFG.commentEditor === false);
+  }
+  // 댓글에 에디터를 쓰지 않는 설정: Redmine 툴바와 탭을 숨기고 일반 입력칸만 보여 준다 (저장 방식은 그대로)
+  function plainize(ta) {
+    if (ta.dataset.asciisoftPlain) return;
+    ta.dataset.asciisoftPlain = '1';
+    var block = ta.closest('.jstBlock');
+    if (block) block.classList.add('asciisoft-plain');
+    var h = moduleHeight(moduleKey(ta));
+    if (h) ta.style.height = h + 'px';
+  }
+
   function attach(ta) {
     if (ta.dataset.asciisoftEditor || ta.disabled || ta.readOnly) return;
     if (document.body.getAttribute('data-text-formatting') !== 'common_mark') return;
@@ -330,12 +407,28 @@
       editor.exec('addImage', { imageUrl: url, altText: '' });
     }
 
+    function openLinkDialog(kind) {
+      var issue = kind === 'issue';
+      askDialog({
+        title: issue ? L.issueLink : L.wikiLink,
+        label: issue ? L.issuePrompt : L.wikiPrompt,
+        placeholder: issue ? '123' : '',
+        invalid: L.dialogInvalid, ok: L.ok, cancel: L.cancel,
+        normalize: function (v) {
+          v = String(v || '').trim();
+          if (issue) return /^#?\d{1,9}$/.test(v) ? v.replace('#', '') : null;
+          return v && !/[\[\]\r\n]/.test(v) ? v : null;
+        },
+        onOk: function (v) { editor.focus(); editor.insertText(issue ? '#' + v + ' ' : '[[' + v + ']] '); },
+        onClose: function () { try { editor.focus(); } catch (e) {} }
+      });
+    }
     var showW = CFG.showWysiwyg !== false, showM = CFG.showMarkdown !== false;
     if (!showW && !showM) { showW = true; showM = true; }
     var defaultFont = FONT_FAMILIES.filter(function (f) { return f[0] === CFG.defaultFont; })[0] ||
       FONT_FAMILIES.filter(function (f) { return f[0] === 'Segoe UI'; })[0];
     var defaultSize = FONT_SIZES.indexOf(parseInt(CFG.defaultFontSize, 10)) > -1 ? parseInt(CFG.defaultFontSize, 10) : 14;
-    var fixedHeight = parseInt(CFG.height, 10);
+    var fixedHeight = moduleHeight(moduleKey(ta));
     host.style.setProperty('--asciisoft-font', defaultFont[1]);
     host.style.setProperty('--asciisoft-size', defaultSize + 'px');
 
@@ -344,7 +437,7 @@
       FONT_FAMILIES.map(function (f) { return [f[0], f[1], f[1]]; }),
       function (v) { applyStyle('font-family', v === defaultFont[1] ? '' : v); }, L.prevItem, L.nextItem, -1);
     var sizeCombo = makeCombo('asciisoft-combo-size', L.fontSize,
-      FONT_SIZES.map(function (n) { return [String(n), n + 'px']; }),
+      FONT_SIZES.map(function (n) { return [n + 'px', n + 'px']; }),
       function (v) { applyStyle('font-size', v === defaultSize + 'px' ? '' : v); }, L.sizeUp, L.sizeDown, 1);
     var lhMenu = makeMenuButton('asciisoft-ic-lineheight', L.lineHeight,
       [[L.defaultValue, '']].concat(LINE_HEIGHTS.map(function (n) { return [n, n]; })),
@@ -356,32 +449,23 @@
       hideModeSwitch: !(showW && showM),
       previewStyle: 'tab',
       height: fixedHeight >= 120 ? fixedHeight + 'px' : 'auto',
-      minHeight: Math.max(140, Math.min(rows * 22, 420)) + 'px',
+      minHeight: Math.max(160, rows * 22 + 70) + 'px',
       initialValue: showW ? preProcess(original, ctx) : original,
       language: CFG.lang || 'ko-KR',
       usageStatistics: false,
       autofocus: false,
       customHTMLRenderer: HTML_RENDERER,
       toolbarItems: [
-        [
-          { name: 'asciisoftFont', tooltip: L.fontFamily, el: fontCombo.wrap },
-          { name: 'asciisoftSize', tooltip: L.fontSize, el: sizeCombo.wrap },
-          { name: 'asciisoftLine', tooltip: L.lineHeight, el: lhMenu.el }
-        ],
-        ['heading', 'bold', 'italic', 'strike'],
-        ['hr', 'quote'],
-        ['ul', 'ol', 'task', 'indent', 'outdent'],
+        [{ name: 'asciisoftFont', tooltip: L.fontFamily, el: fontCombo.wrap }],
+        [{ name: 'asciisoftSize', tooltip: L.fontSize, el: sizeCombo.wrap }],
+        ['bold', 'italic', 'strike', 'heading'],
+        ['task', 'hr', 'quote'],
+        ['ul', 'ol', 'indent', 'outdent', { name: 'asciisoftLine', tooltip: L.lineHeight, el: lhMenu.el }],
         ['table', 'image', 'link'],
         ['code', 'codeblock'],
         [
-          { name: 'asciisoftIssue', tooltip: L.issueLink, el: iconButton('asciisoft-ic-issue', L.issueLink, function () {
-              var n = window.prompt(L.issuePrompt);
-              if (n && /^\d+$/.test(n.trim())) editor.insertText('#' + n.trim() + ' ');
-            }) },
-          { name: 'asciisoftWiki', tooltip: L.wikiLink, el: iconButton('asciisoft-ic-wiki', L.wikiLink, function () {
-              var p = window.prompt(L.wikiPrompt);
-              if (p && p.trim()) editor.insertText('[[' + p.trim() + ']] ');
-            }) }
+          { name: 'asciisoftIssue', tooltip: L.issueLink, el: iconButton('asciisoft-ic-issue', L.issueLink, function () { openLinkDialog('issue'); }) },
+          { name: 'asciisoftWiki', tooltip: L.wikiLink, el: iconButton('asciisoft-ic-wiki', L.wikiLink, function () { openLinkDialog('wiki'); }) }
         ]
       ],
       hooks: {
@@ -695,10 +779,14 @@
   }
 
   function attachAll(root) {
-    var list = (root || document).querySelectorAll ? (root || document).querySelectorAll(SELECTOR) : [];
+    var scope = root || document;
+    var list = scope.querySelectorAll ? scope.querySelectorAll(SELECTOR) : [];
     if (!list.length) return;
+    var rich = [];
+    Array.prototype.forEach.call(list, function (ta) { if (isPlain(ta)) plainize(ta); else rich.push(ta); });
+    if (!rich.length) return;
     loadAssets().then(function () {
-      Array.prototype.forEach.call(list, function (ta) {
+      rich.forEach(function (ta) {
         try { attach(ta); } catch (e) { if (window.console) console.error('[asciisoft-editor]', e); }
       });
     }).catch(function (e) { if (window.console) console.error('[asciisoft-editor]', e); });

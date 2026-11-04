@@ -5,19 +5,21 @@ Redmine::Plugin.register :asciisoft_redmine_editor do
   name 'ASCII SOFT WYSIWYG 편집기'
   author 'ASCII SOFT'
   description 'Markdown 편집 칸을 WYSIWYG 편집기로 대체합니다'
-  version '1.2.0'
+  version '1.3.0'
   url 'https://asciisoft.com'
   requires_redmine version_or_higher: '7.0.0'
   settings default: {
     'enabled' => '1', 'default_font' => 'Segoe UI', 'default_font_size' => '14',
-    'editor_height' => '300', 'show_wysiwyg' => '1', 'show_markdown' => '1'
+    'show_wysiwyg' => '1', 'show_markdown' => '1', 'comment_editor' => '1'
   }, partial: 'settings/asciisoft_redmine_editor'
 end
 
 module AsciisoftRedmineEditor
-  FONT_NAMES = ['Consolas', 'Tahoma', 'Arial', 'Impact', 'Segoe UI', 'Courier New', 'Verdana', 'Sans-serif',
-                'Times New Roman', '맑은 고딕', '굴림', '돋움', '바탕', '궁서'].freeze
-  FONT_SIZES = [7, 8, 9, 10, 11, 12, 14, 15, 18, 20, 24, 28, 32, 38, 45, 48].freeze
+  FONT_BASE = ['Consolas', 'Tahoma', 'Arial', 'Impact', 'Segoe UI', 'Courier New', 'Verdana', 'Sans-serif', 'Times New Roman'].freeze
+  FONT_KO = ['맑은 고딕', '굴림', '돋움', '바탕', '궁서'].freeze
+  # 모듈(화면)별 세로 크기를 따로 지정할 수 있는 입력칸
+  MODULE_KEYS = %w[issue_description issue_notes news_description news_comment message wiki document project].freeze
+  FONT_SIZES = [7, 8, 9, 10, 11, 12, 14, 15, 18, 20, 24, 28, 32, 38, 45, 48, 72, 99].freeze
 
   class Hooks < Redmine::Hook::ViewListener
     PLUGIN = 'asciisoft_redmine_editor'.freeze
@@ -28,10 +30,17 @@ module AsciisoftRedmineEditor
       s = Setting.plugin_asciisoft_redmine_editor || {}
       return '' unless s['enabled'].to_s == '1'
 
-      font = AsciisoftRedmineEditor::FONT_NAMES.include?(s['default_font'].to_s) ? s['default_font'].to_s : 'Segoe UI'
+      ko = current_language.to_s.start_with?('ko')
+      fonts = AsciisoftRedmineEditor::FONT_BASE + (ko ? AsciisoftRedmineEditor::FONT_KO : [])
+      font = fonts.include?(s['default_font'].to_s) ? s['default_font'].to_s : 'Segoe UI'
       size = AsciisoftRedmineEditor::FONT_SIZES.include?(s['default_font_size'].to_i) ? s['default_font_size'].to_i : 14
-      height = s['editor_height'].to_i
-      height = nil unless height.between?(120, 2000)
+      heights = {}
+      AsciisoftRedmineEditor::MODULE_KEYS.each do |k|
+        next unless s["height_#{k}_on"].to_s == '1'
+
+        h = s["height_#{k}"].to_i
+        heights[k] = h if h.between?(120, 2000)
+      end
 
       config = {
         bundle: asset_path("plugin_assets/#{PLUGIN}/toastui-editor-bundle.min.js"),
@@ -39,7 +48,9 @@ module AsciisoftRedmineEditor
         lang: current_language.to_s.start_with?('ko') ? 'ko-KR' : 'en-US',
         defaultFont: font,
         defaultFontSize: size,
-        height: height,
+        heights: heights,
+        koFonts: ko,
+        commentEditor: s.fetch('comment_editor', '1').to_s == '1',
         showWysiwyg: s.fetch('show_wysiwyg', '1').to_s == '1',
         showMarkdown: s.fetch('show_markdown', '1').to_s == '1',
         labels: {
@@ -60,7 +71,10 @@ module AsciisoftRedmineEditor
           sizeUp: l(:asciisoft_editor_size_up),
           sizeDown: l(:asciisoft_editor_size_down),
           editorTab: l(:asciisoft_editor_tab),
-          mdNoticeNoSwitch: l(:asciisoft_editor_md_notice_no_switch)
+          mdNoticeNoSwitch: l(:asciisoft_editor_md_notice_no_switch),
+          ok: l(:asciisoft_editor_ok),
+          cancel: l(:asciisoft_editor_cancel),
+          dialogInvalid: l(:asciisoft_editor_dialog_invalid)
         }
       }
       safe_join([
