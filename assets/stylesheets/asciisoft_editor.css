@@ -1,0 +1,24 @@
+/* ASCII SOFT Redmine WYSIWYG Editor */
+.asciisoft-hidden { display: none !important; }
+.asciisoft-editor { margin-block: 2px 6px; max-inline-size: 100%; }
+.asciisoft-editor .toastui-editor-defaultUI { border-color: #c5ccd8; border-radius: 0; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar { border-radius: 0; background: #f5f7fa; }
+.asciisoft-editor .toastui-editor-contents,
+.asciisoft-editor .toastui-editor-md-container .ProseMirror { font-family: inherit; font-size: 14px; }
+.asciisoft-editor .toastui-editor-contents p { margin-block: 0 6px; }
+.asciisoft-editor .toastui-editor-contents img { max-inline-size: 100%; }
+.asciisoft-tb-text {
+  inline-size: auto; min-inline-size: 32px; block-size: 32px; padding: 0 6px; margin: 0 2px;
+  border: 1px solid transparent; background: none; color: #555; font-weight: 700; font-size: 13px; cursor: pointer;
+}
+.asciisoft-tb-text:hover { border-color: #d5dbe6; background: #fff; color: #172948; }
+.asciisoft-editor-notice { font-size: 12px; color: #4a5875; background: #f1f4f9; padding: 5px 8px; margin-block-end: 4px; }
+.asciisoft-tb-select { block-size: 28px; margin: 2px 2px; padding: 0 4px; border: 1px solid #d5dbe6; background: #fff;
+  color: #333; font-size: 12px; max-inline-size: 110px; cursor: pointer; }
+.asciisoft-editor img.asciisoft-broken { display: inline-block; min-inline-size: 160px; min-block-size: 90px;
+  border: 1px dashed #9aa8c2; background: #f1f4f9; color: #4a5875; font-size: 12px; vertical-align: middle; }
+.asciisoft-mention { position: absolute; z-index: 1000; margin: 0; padding: 4px 0; list-style: none; min-inline-size: 200px;
+  max-block-size: 260px; overflow-y: auto; background: #fff; border: 1px solid #c5ccd8; box-shadow: 0 4px 12px rgba(23,41,72,.15); }
+.asciisoft-mention li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 10px; cursor: pointer; font-size: 13px; }
+.asciisoft-mention li em { font-style: normal; color: #6a7794; }
+.asciisoft-mention li.active, .asciisoft-mention li:hover { background: #e8eef8; }

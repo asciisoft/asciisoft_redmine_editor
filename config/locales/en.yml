@@ -1,0 +1,15 @@
+en:
+  asciisoft_editor_issue_link: Issue link
+  asciisoft_editor_issue_prompt: Enter the issue number
+  asciisoft_editor_wiki_link: Wiki link
+  asciisoft_editor_wiki_prompt: Enter the wiki page name
+  asciisoft_editor_no_attach: Images cannot be attached on this screen. Paste them on the issue edit form.
+  asciisoft_editor_too_many: The maximum number of attachments has been reached.
+  asciisoft_editor_md_notice: This content uses syntax that may change in WYSIWYG mode, so it was opened in Markdown mode. You can switch to WYSIWYG with the tab below.
+  asciisoft_editor_setting_enabled: Use WYSIWYG editor
+  asciisoft_editor_setting_enabled_info: Applies only when text formatting is Markdown (CommonMark).
+  asciisoft_editor_font_family: Font
+  asciisoft_editor_font_size: Size
+  asciisoft_editor_line_height: Line height
+  asciisoft_editor_default: Default
+  asciisoft_editor_image: Image

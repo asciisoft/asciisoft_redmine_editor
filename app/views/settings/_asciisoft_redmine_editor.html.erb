@@ -1,0 +1,6 @@
+<p>
+  <label for="settings_enabled"><%= l(:asciisoft_editor_setting_enabled) %></label>
+  <%= hidden_field_tag 'settings[enabled]', '0', id: nil %>
+  <%= check_box_tag 'settings[enabled]', '1', @settings['enabled'].to_s == '1', id: 'settings_enabled' %>
+  <em class="info"><%= l(:asciisoft_editor_setting_enabled_info) %></em>
+</p>

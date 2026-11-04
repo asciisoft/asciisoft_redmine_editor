@@ -1,0 +1,15 @@
+ko:
+  asciisoft_editor_issue_link: 일감 링크
+  asciisoft_editor_issue_prompt: 일감 번호를 입력하세요
+  asciisoft_editor_wiki_link: 위키 링크
+  asciisoft_editor_wiki_prompt: 위키 페이지 이름을 입력하세요
+  asciisoft_editor_no_attach: 이 화면에서는 이미지를 첨부할 수 없습니다. 일감 편집 화면에서 붙여넣어 주세요.
+  asciisoft_editor_too_many: 첨부할 수 있는 파일 수를 넘었습니다.
+  asciisoft_editor_md_notice: 이 내용에는 WYSIWYG로 바꾸면 달라질 수 있는 문법이 있어 Markdown 모드로 열었습니다. 아래쪽 탭에서 WYSIWYG로 전환할 수 있습니다.
+  asciisoft_editor_setting_enabled: WYSIWYG 편집기 사용
+  asciisoft_editor_setting_enabled_info: 텍스트 서식이 Markdown(CommonMark)일 때만 적용됩니다.
+  asciisoft_editor_font_family: 글꼴
+  asciisoft_editor_font_size: 크기
+  asciisoft_editor_line_height: 줄간격
+  asciisoft_editor_default: 기본
+  asciisoft_editor_image: 이미지
