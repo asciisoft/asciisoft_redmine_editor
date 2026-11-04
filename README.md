@@ -1,8 +1,6 @@
 # Redmine Editor Plugin
 
-A Redmine plugin developed and maintained by ASCII SOFT.
-
-A plugin that replaces the default editor with an enhanced rich text editor.
+This plugin replaces the default Redmine editor with a rich text editor.
 
 ## Features
 
@@ -15,16 +13,10 @@ A plugin that replaces the default editor with an enhanced rich text editor.
 - Compatibility with other versions has not been verified.
 - Feedback and test results from other versions are welcome.
 
-## Installation
-
-Installation instructions will be provided here.
-
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+MIT License
 
-## Maintainer
+Developed and maintained by ASCII SOFT.
 
-**ASCII SOFT**
-
-Website: https://asciisoft.com
+https://asciisoft.com
