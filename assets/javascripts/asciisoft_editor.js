@@ -15,6 +15,8 @@
     noAttach: '이 화면에서는 이미지를 첨부할 수 없습니다. 일감 편집 화면에서 붙여넣어 주세요.',
     tooMany: '첨부할 수 있는 파일 수를 넘었습니다.',
     fontFamily: '글꼴', fontSize: '크기', lineHeight: '줄간격', defaultValue: '기본', imageLabel: '이미지',
+    prevItem: '이전 글꼴', nextItem: '다음 글꼴', sizeUp: '크게', sizeDown: '작게', editorTab: '에디터',
+    mdNoticeNoSwitch: '이 내용에는 에디터 모드에서 달라질 수 있는 문법이 있어 Markdown 모드로 열었습니다.',
     mdNotice: '이 내용에는 WYSIWYG로 바꾸면 달라질 수 있는 문법이 있어 Markdown 모드로 열었습니다. 아래쪽 탭에서 WYSIWYG로 전환할 수 있습니다.'
   }, CFG.labels || {});
 
@@ -231,29 +233,78 @@
   }
 
   /* ---------- 편집기 부착 ---------- */
-  function textButton(label, title, onClick) {
+  function iconButton(cls, title, onClick) {
     var b = document.createElement('button');
     b.type = 'button';
-    b.className = 'asciisoft-tb-text';
-    b.textContent = label;
+    b.className = 'toastui-editor-toolbar-icons asciisoft-ic ' + cls;
+    b.title = title;
     b.setAttribute('aria-label', title);
-    b.addEventListener('click', function (e) { e.preventDefault(); onClick(); });
+    b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    b.addEventListener('click', function (e) { e.preventDefault(); onClick(b); });
     return b;
   }
 
-  function selectBox(title, options, onPick) {
+  // 선택 상자 + 오른쪽 작은 위/아래 버튼. upDelta: 위 버튼을 누를 때 이동할 목록 방향
+  function makeCombo(cls, title, options, onPick, upTitle, downTitle, upDelta) {
+    var wrap = document.createElement('span');
+    wrap.className = 'asciisoft-combo ' + cls;
     var sel = document.createElement('select');
     sel.className = 'asciisoft-tb-select';
-    sel.setAttribute('aria-label', title);
     sel.title = title;
-    var head = document.createElement('option'); head.value = '__'; head.textContent = title; sel.appendChild(head);
+    sel.setAttribute('aria-label', title);
     options.forEach(function (o) {
-      var op = document.createElement('option'); op.value = o[1]; op.textContent = o[0];
+      var op = document.createElement('option');
+      op.value = o[1]; op.textContent = o[0];
       if (o[2]) op.style.fontFamily = o[2];
       sel.appendChild(op);
     });
-    sel.addEventListener('change', function () { var v = sel.value; sel.value = '__'; if (v !== '__') onPick(v); });
-    return sel;
+    sel.addEventListener('change', function () { onPick(sel.value); });
+    var step = document.createElement('span');
+    step.className = 'asciisoft-stepper';
+    [[upDelta, upTitle, 'up'], [-upDelta, downTitle, 'down']].forEach(function (d) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.tabIndex = -1;
+      b.className = 'asciisoft-step asciisoft-step-' + d[2];
+      b.title = d[1]; b.setAttribute('aria-label', d[1]);
+      b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        var i = sel.selectedIndex + d[0];
+        if (i < 0 || i >= sel.options.length) return;
+        sel.selectedIndex = i; onPick(sel.value);
+      });
+      step.appendChild(b);
+    });
+    wrap.appendChild(sel); wrap.appendChild(step);
+    return { wrap: wrap, sel: sel };
+  }
+
+  // 아이콘 버튼 + 펼침 목록 (줄간격)
+  function makeMenuButton(cls, title, items, onPick) {
+    var current = '';
+    var menu = document.createElement('ul');
+    menu.className = 'asciisoft-menu';
+    menu.setAttribute('role', 'menu');
+    menu.hidden = true;
+    document.body.appendChild(menu);
+    var btn = iconButton(cls, title, function () {
+      if (!menu.hidden) { menu.hidden = true; return; }
+      menu.textContent = '';
+      items.forEach(function (it) {
+        var li = document.createElement('li');
+        li.setAttribute('role', 'menuitemradio');
+        li.textContent = it[0];
+        if (it[1] === current) li.className = 'checked';
+        li.addEventListener('mousedown', function (e) { e.preventDefault(); menu.hidden = true; onPick(it[1]); });
+        menu.appendChild(li);
+      });
+      var r = btn.getBoundingClientRect();
+      menu.style.left = Math.round(r.left + window.scrollX) + 'px';
+      menu.style.top = Math.round(r.bottom + window.scrollY + 2) + 'px';
+      menu.hidden = false;
+    });
+    document.addEventListener('mousedown', function (e) { if (e.target !== btn && !menu.contains(e.target)) menu.hidden = true; });
+    return { el: btn, setCurrent: function (v) { current = v || ''; } };
   }
 
   function attach(ta) {
@@ -279,28 +330,43 @@
       editor.exec('addImage', { imageUrl: url, altText: '' });
     }
 
+    var showW = CFG.showWysiwyg !== false, showM = CFG.showMarkdown !== false;
+    if (!showW && !showM) { showW = true; showM = true; }
+    var defaultFont = FONT_FAMILIES.filter(function (f) { return f[0] === CFG.defaultFont; })[0] ||
+      FONT_FAMILIES.filter(function (f) { return f[0] === 'Segoe UI'; })[0];
+    var defaultSize = FONT_SIZES.indexOf(parseInt(CFG.defaultFontSize, 10)) > -1 ? parseInt(CFG.defaultFontSize, 10) : 14;
+    var fixedHeight = parseInt(CFG.height, 10);
+    host.style.setProperty('--asciisoft-font', defaultFont[1]);
+    host.style.setProperty('--asciisoft-size', defaultSize + 'px');
+
+    // 기본값과 같은 값을 고르면 서식을 지워 원문을 깔끔하게 유지
+    var fontCombo = makeCombo('asciisoft-combo-font', L.fontFamily,
+      FONT_FAMILIES.map(function (f) { return [f[0], f[1], f[1]]; }),
+      function (v) { applyStyle('font-family', v === defaultFont[1] ? '' : v); }, L.prevItem, L.nextItem, -1);
+    var sizeCombo = makeCombo('asciisoft-combo-size', L.fontSize,
+      FONT_SIZES.map(function (n) { return [String(n), n + 'px']; }),
+      function (v) { applyStyle('font-size', v === defaultSize + 'px' ? '' : v); }, L.sizeUp, L.sizeDown, 1);
+    var lhMenu = makeMenuButton('asciisoft-ic-lineheight', L.lineHeight,
+      [[L.defaultValue, '']].concat(LINE_HEIGHTS.map(function (n) { return [n, n]; })),
+      function (v) { applyStyle('line-height', v); });
+
     editor = new window.AsciisoftToastEditor({
       el: host,
-      initialEditType: 'wysiwyg',
+      initialEditType: showW ? 'wysiwyg' : 'markdown',
+      hideModeSwitch: !(showW && showM),
       previewStyle: 'tab',
-      height: 'auto',
+      height: fixedHeight >= 120 ? fixedHeight + 'px' : 'auto',
       minHeight: Math.max(140, Math.min(rows * 22, 420)) + 'px',
-      initialValue: preProcess(original, ctx),
-      language: 'ko-KR',
+      initialValue: showW ? preProcess(original, ctx) : original,
+      language: CFG.lang || 'ko-KR',
       usageStatistics: false,
       autofocus: false,
       customHTMLRenderer: HTML_RENDERER,
       toolbarItems: [
         [
-          { name: 'asciisoftFont', tooltip: L.fontFamily, el: selectBox(L.fontFamily,
-              [[L.defaultValue, '']].concat(FONT_FAMILIES.map(function (f) { return [f[0], f[1], f[1]]; })),
-              function (v) { applyStyle('font-family', v); }) },
-          { name: 'asciisoftSize', tooltip: L.fontSize, el: selectBox(L.fontSize,
-              [[L.defaultValue, '']].concat(FONT_SIZES.map(function (n) { return [String(n), n + 'px']; })),
-              function (v) { applyStyle('font-size', v); }) },
-          { name: 'asciisoftLine', tooltip: L.lineHeight, el: selectBox(L.lineHeight,
-              [[L.defaultValue, '']].concat(LINE_HEIGHTS.map(function (n) { return [n, n]; })),
-              function (v) { applyStyle('line-height', v); }) }
+          { name: 'asciisoftFont', tooltip: L.fontFamily, el: fontCombo.wrap },
+          { name: 'asciisoftSize', tooltip: L.fontSize, el: sizeCombo.wrap },
+          { name: 'asciisoftLine', tooltip: L.lineHeight, el: lhMenu.el }
         ],
         ['heading', 'bold', 'italic', 'strike'],
         ['hr', 'quote'],
@@ -308,11 +374,11 @@
         ['table', 'image', 'link'],
         ['code', 'codeblock'],
         [
-          { name: 'asciisoftIssue', tooltip: L.issueLink, el: textButton('#', L.issueLink, function () {
+          { name: 'asciisoftIssue', tooltip: L.issueLink, el: iconButton('asciisoft-ic-issue', L.issueLink, function () {
               var n = window.prompt(L.issuePrompt);
               if (n && /^\d+$/.test(n.trim())) editor.insertText('#' + n.trim() + ' ');
             }) },
-          { name: 'asciisoftWiki', tooltip: L.wikiLink, el: textButton('[[ ]]', L.wikiLink, function () {
+          { name: 'asciisoftWiki', tooltip: L.wikiLink, el: iconButton('asciisoft-ic-wiki', L.wikiLink, function () {
               var p = window.prompt(L.wikiPrompt);
               if (p && p.trim()) editor.insertText('[[' + p.trim() + ']] ');
             }) }
@@ -364,7 +430,37 @@
         editor.replaceSelection('<span style="' + prop + ': ' + value + '">' + text + '</span>');
       }
       editor.focus();
+      refreshCombos();
     }
+
+    editor.addCommand('wysiwyg', 'asciisoftReadStyle', function (holder, state) {
+      var spanType = state.schema.marks.span;
+      var marks = state.storedMarks || state.selection.$from.marks();
+      var m = spanType && marks.filter(function (x) { return x.type === spanType; })[0];
+      holder.style = (m && m.attrs.htmlAttrs && m.attrs.htmlAttrs.style) || '';
+      return true;
+    });
+    // 커서 위치의 글꼴/크기/줄간격을 읽어 툴바에 표시 (읽을 수 없으면 기본값)
+    function refreshCombos() {
+      var st = {};
+      if (editor.isWysiwygMode()) {
+        var h = { style: '' };
+        try { editor.exec('asciisoftReadStyle', h); } catch (e) {}
+        st = parseStyle(h.style);
+      }
+      var f = FONT_FAMILIES.filter(function (x) { return x[1] === st['font-family']; })[0] || defaultFont;
+      fontCombo.sel.value = f[1];
+      var fs = st['font-size'];
+      sizeCombo.sel.value = (fs && /px$/.test(fs) && FONT_SIZES.indexOf(parseInt(fs, 10)) > -1) ? parseInt(fs, 10) + 'px' : defaultSize + 'px';
+      lhMenu.setCurrent(st['line-height'] || '');
+    }
+    editor.on('caretChange', refreshCombos);
+    editor.on('changeMode', function () { setTimeout(refreshCombos, 0); });
+    refreshCombos();
+
+    Array.prototype.forEach.call(host.querySelectorAll('.toastui-editor-mode-switch .tab-item'), function (t) {
+      if (/wysiwyg|위지윅/i.test(t.textContent)) t.textContent = L.editorTab;
+    });
 
     setupMention(editor, host, L);
 
@@ -379,14 +475,14 @@
     }, true);
 
     // 왕복 변환으로 내용이 달라지는 글은 원문 보호를 위해 Markdown 모드로 연다
-    if (original.trim()) {
+    if (showW && original.trim()) {
       var probe = unescapeRedmine(restoreUrls(editor.getMarkdown(), ctx));
       if (norm(probe) !== norm(original)) {
         editor.changeMode('markdown', true);
         editor.setMarkdown(original, false);
         var note = document.createElement('div');
         note.className = 'asciisoft-editor-notice';
-        note.textContent = L.mdNotice;
+        note.textContent = showM ? L.mdNotice : L.mdNoticeNoSwitch;
         host.parentNode.insertBefore(note, host);
       }
     }

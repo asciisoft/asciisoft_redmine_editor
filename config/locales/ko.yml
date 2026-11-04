@@ -13,3 +13,16 @@ ko:
   asciisoft_editor_line_height: 줄간격
   asciisoft_editor_default: 기본
   asciisoft_editor_image: 이미지
+  asciisoft_editor_prev_font: "이전 글꼴"
+  asciisoft_editor_next_font: "다음 글꼴"
+  asciisoft_editor_size_up: "크게"
+  asciisoft_editor_size_down: "작게"
+  asciisoft_editor_tab: "에디터"
+  asciisoft_editor_md_notice_no_switch: "이 내용에는 에디터 모드에서 달라질 수 있는 문법이 있어 Markdown 모드로 열었습니다."
+  asciisoft_editor_setting_default_font: "기본 글꼴"
+  asciisoft_editor_setting_default_font_size: "기본 글자 크기"
+  asciisoft_editor_setting_height: "에디터 세로 크기"
+  asciisoft_editor_setting_height_info: "120~2000. 비우면 내용에 맞춰 자동으로 늘어납니다."
+  asciisoft_editor_setting_show_wysiwyg: "에디터 탭 표시"
+  asciisoft_editor_setting_show_markdown: "Markdown 탭 표시"
+  asciisoft_editor_setting_tabs_info: "하나만 켜면 그 모드만 쓰고 전환 탭은 숨깁니다. 둘 다 끄면 둘 다 표시합니다."

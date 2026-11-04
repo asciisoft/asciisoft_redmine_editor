@@ -13,3 +13,16 @@ en:
   asciisoft_editor_line_height: Line height
   asciisoft_editor_default: Default
   asciisoft_editor_image: Image
+  asciisoft_editor_prev_font: "Previous font"
+  asciisoft_editor_next_font: "Next font"
+  asciisoft_editor_size_up: "Larger"
+  asciisoft_editor_size_down: "Smaller"
+  asciisoft_editor_tab: "Editor"
+  asciisoft_editor_md_notice_no_switch: "This content uses syntax that may change in Editor mode, so it was opened in Markdown mode."
+  asciisoft_editor_setting_default_font: "Default font"
+  asciisoft_editor_setting_default_font_size: "Default font size"
+  asciisoft_editor_setting_height: "Editor height"
+  asciisoft_editor_setting_height_info: "120-2000. Leave empty to grow with the content."
+  asciisoft_editor_setting_show_wysiwyg: "Show Editor tab"
+  asciisoft_editor_setting_show_markdown: "Show Markdown tab"
+  asciisoft_editor_setting_tabs_info: "If only one is on, that mode is used and the switch is hidden. If both are off, both are shown."

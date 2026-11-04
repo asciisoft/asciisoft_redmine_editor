@@ -5,24 +5,43 @@ Redmine::Plugin.register :asciisoft_redmine_editor do
   name 'ASCII SOFT WYSIWYG 편집기'
   author 'ASCII SOFT'
   description 'Markdown 편집 칸을 WYSIWYG 편집기로 대체합니다'
-  version '1.1.0'
+  version '1.2.0'
   url 'https://asciisoft.com'
   requires_redmine version_or_higher: '7.0.0'
-  settings default: { 'enabled' => '1' }, partial: 'settings/asciisoft_redmine_editor'
+  settings default: {
+    'enabled' => '1', 'default_font' => 'Segoe UI', 'default_font_size' => '14',
+    'editor_height' => '300', 'show_wysiwyg' => '1', 'show_markdown' => '1'
+  }, partial: 'settings/asciisoft_redmine_editor'
 end
 
 module AsciisoftRedmineEditor
+  FONT_NAMES = ['Consolas', 'Tahoma', 'Arial', 'Impact', 'Segoe UI', 'Courier New', 'Verdana', 'Sans-serif',
+                'Times New Roman', '맑은 고딕', '굴림', '돋움', '바탕', '궁서'].freeze
+  FONT_SIZES = [7, 8, 9, 10, 11, 12, 14, 15, 18, 20, 24, 28, 32, 38, 45, 48].freeze
+
   class Hooks < Redmine::Hook::ViewListener
     PLUGIN = 'asciisoft_redmine_editor'.freeze
 
     def view_layouts_base_html_head(_context = {})
       return '' unless Setting.text_formatting == 'common_mark'
       return '' unless User.current.logged?
-      return '' unless (Setting.plugin_asciisoft_redmine_editor || {})['enabled'].to_s == '1'
+      s = Setting.plugin_asciisoft_redmine_editor || {}
+      return '' unless s['enabled'].to_s == '1'
+
+      font = AsciisoftRedmineEditor::FONT_NAMES.include?(s['default_font'].to_s) ? s['default_font'].to_s : 'Segoe UI'
+      size = AsciisoftRedmineEditor::FONT_SIZES.include?(s['default_font_size'].to_i) ? s['default_font_size'].to_i : 14
+      height = s['editor_height'].to_i
+      height = nil unless height.between?(120, 2000)
 
       config = {
         bundle: asset_path("plugin_assets/#{PLUGIN}/toastui-editor-bundle.min.js"),
         css: asset_path("plugin_assets/#{PLUGIN}/toastui-editor.css"),
+        lang: current_language.to_s.start_with?('ko') ? 'ko-KR' : 'en-US',
+        defaultFont: font,
+        defaultFontSize: size,
+        height: height,
+        showWysiwyg: s.fetch('show_wysiwyg', '1').to_s == '1',
+        showMarkdown: s.fetch('show_markdown', '1').to_s == '1',
         labels: {
           issueLink: l(:asciisoft_editor_issue_link),
           issuePrompt: l(:asciisoft_editor_issue_prompt),
@@ -35,7 +54,13 @@ module AsciisoftRedmineEditor
           fontSize: l(:asciisoft_editor_font_size),
           lineHeight: l(:asciisoft_editor_line_height),
           defaultValue: l(:asciisoft_editor_default),
-          imageLabel: l(:asciisoft_editor_image)
+          imageLabel: l(:asciisoft_editor_image),
+          prevItem: l(:asciisoft_editor_prev_font),
+          nextItem: l(:asciisoft_editor_next_font),
+          sizeUp: l(:asciisoft_editor_size_up),
+          sizeDown: l(:asciisoft_editor_size_down),
+          editorTab: l(:asciisoft_editor_tab),
+          mdNoticeNoSwitch: l(:asciisoft_editor_md_notice_no_switch)
         }
       }
       safe_join([

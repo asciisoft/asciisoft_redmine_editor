@@ -4,17 +4,10 @@
 .asciisoft-editor .toastui-editor-defaultUI { border-color: #c5ccd8; border-radius: 0; }
 .asciisoft-editor .toastui-editor-defaultUI-toolbar { border-radius: 0; background: #f5f7fa; }
 .asciisoft-editor .toastui-editor-contents,
-.asciisoft-editor .toastui-editor-md-container .ProseMirror { font-family: inherit; font-size: 14px; }
+.asciisoft-editor .toastui-editor-md-container .ProseMirror { font-family: var(--asciisoft-font, inherit); font-size: var(--asciisoft-size, 14px); }
 .asciisoft-editor .toastui-editor-contents p { margin-block: 0 6px; }
 .asciisoft-editor .toastui-editor-contents img { max-inline-size: 100%; }
-.asciisoft-tb-text {
-  inline-size: auto; min-inline-size: 32px; block-size: 32px; padding: 0 6px; margin: 0 2px;
-  border: 1px solid transparent; background: none; color: #555; font-weight: 700; font-size: 13px; cursor: pointer;
-}
-.asciisoft-tb-text:hover { border-color: #d5dbe6; background: #fff; color: #172948; }
 .asciisoft-editor-notice { font-size: 12px; color: #4a5875; background: #f1f4f9; padding: 5px 8px; margin-block-end: 4px; }
-.asciisoft-tb-select { block-size: 28px; margin: 2px 2px; padding: 0 4px; border: 1px solid #d5dbe6; background: #fff;
-  color: #333; font-size: 12px; max-inline-size: 110px; cursor: pointer; }
 .asciisoft-editor img.asciisoft-broken { display: inline-block; min-inline-size: 160px; min-block-size: 90px;
   border: 1px dashed #9aa8c2; background: #f1f4f9; color: #4a5875; font-size: 12px; vertical-align: middle; }
 .asciisoft-mention { position: absolute; z-index: 1000; margin: 0; padding: 4px 0; list-style: none; min-inline-size: 200px;
@@ -22,3 +15,63 @@
 .asciisoft-mention li { display: flex; justify-content: space-between; gap: 12px; padding: 5px 10px; cursor: pointer; font-size: 13px; }
 .asciisoft-mention li em { font-style: normal; color: #6a7794; }
 .asciisoft-mention li.active, .asciisoft-mention li:hover { background: #e8eef8; }
+
+/* 툴바: 32x32 버튼, 선 아이콘, 툴바 색과 같은 배경 */
+.asciisoft-editor .toastui-editor-defaultUI-toolbar { block-size: auto; min-block-size: 40px; padding: 4px; align-items: center; flex-wrap: wrap; row-gap: 2px;
+  background: #f7f8fa; border-block-end: 1px solid #e3e6ec; }
+.asciisoft-editor .toastui-editor-toolbar-group { display: flex; align-items: center; }
+.asciisoft-editor .toastui-editor-toolbar-divider { block-size: 18px; margin: 0 6px; background: #dfe3ea; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons {
+  inline-size: 32px; block-size: 32px; margin: 0 1px; padding: 0; border: 1px solid transparent; border-radius: 4px;
+  background-color: transparent; background-repeat: no-repeat; vertical-align: middle;
+  background-size: 18px 18px !important; background-position: center !important; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons:not(:disabled):hover { background-color: #e7eaf0; border-color: transparent; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.active { background-color: #dde4f1; border-color: transparent; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons:disabled { opacity: .35; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.heading { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 5v14M18 5v14M6 12h12'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.bold { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 5h5.5a3.5 3.5 0 0 1 0 7H7zM7 12h6.5a3.5 3.5 0 0 1 0 7H7z'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.italic { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 5h8M6 19h8M14 5l-4 14'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.strike { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M16 7.5C15.4 6 13.9 5 12 5 9.8 5 8 6.3 8 8c0 1.3.9 2.3 2.5 3M8 16.5c.6 1.5 2.1 2.5 4 2.5 2.2 0 4-1.3 4-3 0-.7-.3-1.4-.8-2'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.hrline { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h16'/%3E%3Cpath d='M4 7h16M4 17h16' stroke-opacity='.35'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.quote { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 7C7.3 7.5 6 9.3 6 12v5h4.5v-4.5H8M18 7c-2.2.5-3.5 2.3-3.5 5v5H19v-4.5h-2.5'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.bullet-list { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7h11M9 12h11M9 17h11'/%3E%3Ccircle cx='5' cy='7' r='1' fill='%233a4150'/%3E%3Ccircle cx='5' cy='12' r='1' fill='%233a4150'/%3E%3Ccircle cx='5' cy='17' r='1' fill='%233a4150'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.ordered-list { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 7h10M10 12h10M10 17h10M4.5 5.5 5.5 5v4M4 15.5c.3-.6.9-.9 1.5-.8.7.1 1 .7.8 1.3-.2.5-2.3 2-2.3 2h2.5'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.task-list { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5h5v5H4zM4 14h5v5H4zM5.3 7.6l1.1 1.1 1.9-2.1M12 7.5h8M12 16.5h8'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.indent { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6h16M11 10h9M11 14h9M4 18h16M4 9.5 7 12l-3 2.5'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.outdent { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6h16M11 10h9M11 14h9M4 18h16M7 9.5 4 12l3 2.5'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.table { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5h16v14H4zM4 10h16M4 14.5h16M10 5v14'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.image { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5h16v14H4zM4 16l4.5-4.5 4 4 2.5-2.5 5 5'/%3E%3Ccircle cx='9' cy='9.5' r='1.5'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.link { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14a4 4 0 0 0 5.7 0l2.6-2.6a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-2.6 2.6a4 4 0 0 0 5.7 5.7l1-1'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.code { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 8l-4 4 4 4M15 8l4 4-4 4'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.codeblock { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5h16v14H4zM10 10l-2 2 2 2M14 10l2 2-2 2'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.more { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='6' cy='12' r='1.2' fill='%233a4150'/%3E%3Ccircle cx='12' cy='12' r='1.2' fill='%233a4150'/%3E%3Ccircle cx='18' cy='12' r='1.2' fill='%233a4150'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.asciisoft-ic-issue { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 4 7.5 20M16.5 4l-2 16M4.5 9h16M3.5 15h16'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.asciisoft-ic-wiki { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7.5 5H5v14h2.5M10.5 5H8.5v14h2M16.5 5H19v14h-2.5M13.5 5h2v14h-2'/%3E%3C/svg%3E"); }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.asciisoft-ic-lineheight { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h12M6 20h12M12 7.5v9M9.5 10 12 7.5 14.5 10M9.5 14l2.5 2.5 2.5-2.5'/%3E%3C/svg%3E"); }
+.asciisoft-combo { display: inline-flex; align-items: center; block-size: 32px; margin: 0 2px; border-radius: 4px; }
+.asciisoft-editor .toastui-editor-toolbar-group:first-child .asciisoft-combo:first-child { margin-inline-start: 0; }
+.asciisoft-combo:hover { background: #e7eaf0; }
+.asciisoft-tb-select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; block-size: 32px;
+  padding: 0 2px 0 4px; font-size: 12px; color: #333; cursor: pointer; outline: none; }
+.asciisoft-tb-select:focus-visible { box-shadow: inset 0 0 0 1px #4f7cc8; border-radius: 4px; }
+.asciisoft-combo-font .asciisoft-tb-select { inline-size: 88px; }
+.asciisoft-combo-size .asciisoft-tb-select { inline-size: 34px; }
+.asciisoft-stepper { display: inline-flex; flex-direction: column; justify-content: center; block-size: 32px; margin-inline-end: 2px; }
+.asciisoft-step { inline-size: 14px; block-size: 12px; padding: 0; border: 0; border-radius: 2px; cursor: pointer;
+  background: transparent center / 9px 9px no-repeat; }
+.asciisoft-step:hover { background-color: #d9dee8; }
+.asciisoft-step-up { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 14l5-5 5 5'/%3E%3C/svg%3E"); }
+.asciisoft-step-down { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a4150' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E"); }
+.asciisoft-menu { position: absolute; z-index: 1000; margin: 0; padding: 4px 0; list-style: none; min-inline-size: 96px;
+  background: #fff; border: 1px solid #c5ccd8; box-shadow: 0 4px 12px rgba(23,41,72,.15); }
+.asciisoft-menu li { position: relative; padding: 5px 12px 5px 26px; font-size: 13px; cursor: pointer; }
+.asciisoft-menu li.checked::before { content: '\2713'; position: absolute; inset-inline-start: 9px; }
+.asciisoft-menu li:hover { background: #e8eef8; }
+/* 사용자 정의 항목(글꼴/크기/줄간격/일감·위키 링크) 감싸는 칸: 다른 버튼과 같은 높이와 정렬 */
+.asciisoft-editor .toastui-editor-toolbar-item-wrapper { display: inline-flex; align-items: center; block-size: 32px; margin: 0 1px; }
+.asciisoft-editor .toastui-editor-dropdown-toolbar { display: flex; align-items: center; padding: 4px; block-size: auto; }
+.asciisoft-editor .toastui-editor-toolbar-item-wrapper > button.toastui-editor-toolbar-icons { margin: 0 !important; }
+/* 툴바가 줄바꿈되므로 '더보기' 버튼은 쓰지 않는다 */
+.asciisoft-editor .toastui-editor-defaultUI-toolbar button.toastui-editor-toolbar-icons.more { display: none !important; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar .toastui-editor-toolbar-item-wrapper { display: inline-flex !important; align-items: center; block-size: 32px; }
+.asciisoft-editor .toastui-editor-defaultUI-toolbar .toastui-editor-toolbar-item-wrapper > button { display: block; }

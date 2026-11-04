@@ -1,6 +1,32 @@
+<% fonts = AsciisoftRedmineEditor::FONT_NAMES %>
+<% sizes = AsciisoftRedmineEditor::FONT_SIZES.map { |n| ["#{n}px", n.to_s] } %>
 <p>
   <label for="settings_enabled"><%= l(:asciisoft_editor_setting_enabled) %></label>
   <%= hidden_field_tag 'settings[enabled]', '0', id: nil %>
   <%= check_box_tag 'settings[enabled]', '1', @settings['enabled'].to_s == '1', id: 'settings_enabled' %>
   <em class="info"><%= l(:asciisoft_editor_setting_enabled_info) %></em>
+</p>
+<p>
+  <label for="settings_default_font"><%= l(:asciisoft_editor_setting_default_font) %></label>
+  <%= select_tag 'settings[default_font]', options_for_select(fonts, (@settings['default_font'].presence || 'Segoe UI')), id: 'settings_default_font' %>
+</p>
+<p>
+  <label for="settings_default_font_size"><%= l(:asciisoft_editor_setting_default_font_size) %></label>
+  <%= select_tag 'settings[default_font_size]', options_for_select(sizes, (@settings['default_font_size'].presence || '14').to_s), id: 'settings_default_font_size' %>
+</p>
+<p>
+  <label for="settings_editor_height"><%= l(:asciisoft_editor_setting_height) %></label>
+  <%= number_field_tag 'settings[editor_height]', @settings['editor_height'], min: 120, max: 2000, step: 10, id: 'settings_editor_height', size: 6 %> px
+  <em class="info"><%= l(:asciisoft_editor_setting_height_info) %></em>
+</p>
+<p>
+  <label for="settings_show_wysiwyg"><%= l(:asciisoft_editor_setting_show_wysiwyg) %></label>
+  <%= hidden_field_tag 'settings[show_wysiwyg]', '0', id: nil %>
+  <%= check_box_tag 'settings[show_wysiwyg]', '1', @settings.fetch('show_wysiwyg', '1').to_s == '1', id: 'settings_show_wysiwyg' %>
+</p>
+<p>
+  <label for="settings_show_markdown"><%= l(:asciisoft_editor_setting_show_markdown) %></label>
+  <%= hidden_field_tag 'settings[show_markdown]', '0', id: nil %>
+  <%= check_box_tag 'settings[show_markdown]', '1', @settings.fetch('show_markdown', '1').to_s == '1', id: 'settings_show_markdown' %>
+  <em class="info"><%= l(:asciisoft_editor_setting_tabs_info) %></em>
 </p>
