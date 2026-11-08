@@ -1,4 +1,4 @@
-# asciisoft_redmine_editor (v1.3.0)
+# asciisoft_redmine_editor (v1.3.3)
 
 [한국어](README.ko.md)
 
@@ -20,6 +20,7 @@ The original text area stays hidden, and the editor writes the content back to i
 - Paste or drop images from the clipboard → uploaded as Redmine attachments and inserted
 - Excel tables become Markdown tables; Word bold/italic/numbered lists are kept
 - Images that cannot be loaded are shown as an "Image: file name" placeholder (saved content is unchanged)
+- Clicking any empty area of the editor body (for example below the last line) puts the cursor at the nearest position so you can type right away
 - Content protection: text that may change when converted opens in Markdown mode with a notice;
   untouched content is saved exactly as it was
 - The toolbar always stays on one line (about 40px high). When the editor is too narrow, the buttons that do not fit move into the "⋯" more menu (about 930px of editor width shows every button)

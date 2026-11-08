@@ -548,6 +548,38 @@
 
     setupMention(editor, host, L);
 
+    // 본문 빈 영역(마지막 줄 아래 등)을 눌러도 가장 가까운 위치에 커서를 두고 바로 입력할 수 있게 한다
+    ['wysiwyg', 'markdown'].forEach(function (type) {
+      editor.addCommand(type, 'asciisoftFocusAt_' + type, function (p, st, dispatch, view) {
+        var box = view.dom.getBoundingClientRect();
+        var Sel = st.selection.constructor;
+        var $pos, bias;
+        if (p.y > box.bottom) { $pos = st.doc.resolve(st.doc.content.size); bias = -1; }
+        else if (p.y < box.top) { $pos = st.doc.resolve(0); bias = 1; }
+        else {
+          var hit = view.posAtCoords({ left: p.x, top: p.y });
+          $pos = st.doc.resolve(hit ? hit.pos : st.doc.content.size); bias = -1;
+        }
+        dispatch(st.tr.setSelection(Sel.near($pos, bias)).scrollIntoView());
+        return true;
+      });
+    });
+    host.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      var t = e.target;
+      var area = t.closest ? t.closest('.toastui-editor-ww-container, .toastui-editor-md-container') : null;
+      if (!area || t.closest('.toastui-editor-popup, .toastui-editor-md-preview')) return;
+      var pm = area.querySelector('.ProseMirror');
+      if (!pm || pm.contains(t)) return;                       // 글 안쪽은 기본 동작
+      var r = area.getBoundingClientRect();
+      if (e.clientX - r.left > area.clientWidth || e.clientY - r.top > area.clientHeight) return;  // 스크롤바 클릭은 제외
+      e.preventDefault();
+      var cmd = 'asciisoftFocusAt_' + (editor.isWysiwygMode() ? 'wysiwyg' : 'markdown'), pt = { x: e.clientX, y: e.clientY };
+      pm.focus({ preventScroll: true });   // 편집기의 focus() 는 약간 늦게 적용되어 바로 입력하면 첫 글자가 사라지므로 직접 포커스
+      editor.exec(cmd, pt);
+      setTimeout(function () { editor.exec(cmd, pt); }, 0);
+    });
+
     // 불러오지 못한 이미지는 자리 표시 상자로 보여 준다 (화면 표시만 바꾸고 저장 내용은 그대로)
     host.addEventListener('error', function (e) {
       var img = e.target;

@@ -117,3 +117,10 @@
 .asciisoft-editor input, .asciisoft-editor select, .asciisoft-editor textarea { max-inline-size: none; }
 .tabular .asciisoft-editor { max-inline-size: 95%; }
 .asciisoft-editor .toastui-editor-contents th { text-align: start; }
+
+/* Markdown 모드의 Write/Preview 탭 칸: 높이를 툴바(39px)와 맞춘다.
+   기본값 46px 그대로 두면 툴바보다 길어서 (1) 탭이 툴바 아래 선보다 내려오고
+   (2) 왼쪽에 떠 있는 탭 칸이 아래 편집 영역을 오른쪽으로 밀어 왼쪽에 빈 공간이 생긴다 */
+.asciisoft-editor .toastui-editor-defaultUI .toastui-editor-md-tab-container { height: 38px; box-sizing: content-box; border-bottom-color: #e3e6ec; background: #f7f8fa; }
+.asciisoft-editor .toastui-editor-md-tab-container .tab-item { height: 26px; line-height: 26px; margin-top: 13px; }
+.asciisoft-editor .toastui-editor-main { clear: both; }
