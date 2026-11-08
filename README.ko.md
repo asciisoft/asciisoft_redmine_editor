@@ -1,4 +1,4 @@
-# asciisoft_redmine_editor (v1.3.3)
+# asciisoft_redmine_editor (v1.3.4)
 
 [English](README.md)
 

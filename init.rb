@@ -5,7 +5,7 @@ Redmine::Plugin.register :asciisoft_redmine_editor do
   name 'ASCII SOFT WYSIWYG 편집기'
   author 'ASCII SOFT'
   description 'Markdown 편집 칸을 WYSIWYG 편집기로 대체합니다'
-  version '1.3.3'
+  version '1.3.4'
   url 'https://asciisoft.com'
   requires_redmine version_or_higher: '7.0.0'
   settings default: {
